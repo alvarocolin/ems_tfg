@@ -44,6 +44,7 @@ def run_s3_optimizer(df_input: pd.DataFrame, params: dict, dt_h: float) -> pd.Da
     soc_max = params["soc_max"]
     soc_res = params["soc_res"]
     soc_init = params["soc_init"]
+    c_deg = params.get("c_deg", 0.0)
 
     m = ConcreteModel()
     m.T = RangeSet(0, n - 1)
@@ -103,8 +104,7 @@ def run_s3_optimizer(df_input: pd.DataFrame, params: dict, dt_h: float) -> pd.Da
     # Initial SOC
     m.soc_init = Constraint(expr=m.SOC[0] == soc_init)
 
-    # Optional but recommended: end-of-horizon SOC equal to initial SOC
-    # This avoids the optimizer "using up" initial battery energy for free.
+    # Recommended: end-of-horizon SOC equal to initial SOC
     m.soc_final = Constraint(expr=m.SOC[n - 1] == soc_init)
 
     # SOC dynamics
@@ -119,9 +119,11 @@ def run_s3_optimizer(df_input: pd.DataFrame, params: dict, dt_h: float) -> pd.Da
 
     m.soc_dyn = Constraint(m.T, rule=soc_dyn_rule)
 
-    # Objective: minimize energy purchase cost
+    # Objective: energy purchase cost + battery degradation cost
     def objective_rule(m):
-        return sum(m.price[t] * m.Pg[t] * dt_h for t in m.T)
+        grid_cost = sum(m.price[t] * m.Pg[t] * dt_h for t in m.T)
+        degradation_cost = sum(c_deg * m.Pd[t] * dt_h for t in m.T)
+        return grid_cost + degradation_cost
 
     m.obj = Objective(rule=objective_rule, sense=minimize)
 
@@ -140,5 +142,8 @@ def run_s3_optimizer(df_input: pd.DataFrame, params: dict, dt_h: float) -> pd.Da
         "SOC": [value(m.SOC[t]) for t in range(n)],
         "u": [value(m.u[t]) for t in range(n)],
     })
+
+    # Optional: useful for later analysis
+    df_result["battery_deg_cost_eur"] = c_deg * df_result["Pd"] * dt_h
 
     return df_result
