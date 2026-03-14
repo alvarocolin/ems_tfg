@@ -10,9 +10,6 @@ def compute_kpis(
     e_kwh: float | None = None,
     c_deg: float = 0.0,
 ) -> dict:
-    """
-    Compute basic KPIs for a simulation result.
-    """
     grid_cost_eur = (df_input["price_eur_per_kwh"] * df_result["Pg"] * dt_h).sum()
 
     discharged_energy_kwh = (df_result["Pd"] * dt_h).sum()
@@ -25,6 +22,7 @@ def compute_kpis(
 
     total_pv_curt_kwh = (df_result["PVcurt"] * dt_h).sum()
     grid_energy_kwh = (df_result["Pg"] * dt_h).sum()
+    grid_power_peak_kw = df_result["Pg"].max()
 
     cycles_eq = None
     if e_kwh is not None and e_kwh > 0:
@@ -35,6 +33,7 @@ def compute_kpis(
         "degradation_cost_eur": float(degradation_cost_eur),
         "total_cost_eur": float(total_cost_eur),
         "grid_energy_kwh": float(grid_energy_kwh),
+        "grid_power_peak_kw": float(grid_power_peak_kw),
         "autocons_pct": float(autocons_pct),
         "pv_curtailment_kwh": float(total_pv_curt_kwh),
         "discharged_energy_kwh": float(discharged_energy_kwh),

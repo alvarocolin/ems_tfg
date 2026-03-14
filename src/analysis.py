@@ -11,6 +11,7 @@ from plots import (
     plot_bar_costs,
     plot_bar_autocons,
     plot_bar_cycles,
+    plot_bar_peak_grid,
 )
 
 
@@ -119,6 +120,7 @@ def run_analysis(project_root: str | Path, params: dict) -> None:
     plot_bar_costs(df_summary, figures_dir / "bar_total_cost.png")
     plot_bar_autocons(df_summary, figures_dir / "bar_autocons.png")
     plot_bar_cycles(df_summary, figures_dir / "bar_cycles.png")
+    plot_bar_peak_grid(df_summary, figures_dir / "bar_peak_grid.png")
 
     print("✅ Analysis completed")
     print(f"Tabla resumen guardada en: {summary_path}")

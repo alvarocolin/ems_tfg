@@ -14,6 +14,7 @@ def print_kpis(name: str, kpis: dict) -> None:
     print(f"Coste degradación (€): {kpis['degradation_cost_eur']:.2f}")
     print(f"Coste total (€): {kpis['total_cost_eur']:.2f}")
     print(f"Energía red (kWh): {kpis['grid_energy_kwh']:.2f}")
+    print(f"Pico potencia red (kW): {kpis['grid_power_peak_kw']:.2f}")
     print(f"Autoconsumo FV (%): {kpis['autocons_pct']:.2f}")
     print(f"Curtailment FV (kWh): {kpis['pv_curtailment_kwh']:.2f}")
     print(f"Energía descargada batería (kWh): {kpis['discharged_energy_kwh']:.2f}")

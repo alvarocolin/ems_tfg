@@ -110,3 +110,22 @@ def plot_bar_cycles(
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
+
+
+def plot_bar_peak_grid(
+    df_summary: pd.DataFrame,
+    output_path: str | Path,
+) -> None:
+    """
+    Bar chart for peak grid power by strategy.
+    """
+    output_path = Path(output_path)
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(df_summary["strategy"], df_summary["grid_power_peak_kw"])
+    plt.xlabel("Strategy")
+    plt.ylabel("Peak grid power (kW)")
+    plt.title("Peak grid power by strategy")
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300)
+    plt.close()
