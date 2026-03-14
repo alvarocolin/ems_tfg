@@ -12,6 +12,7 @@ from plots import (
     plot_bar_autocons,
     plot_bar_cycles,
     plot_bar_peak_grid,
+    plot_dispatch_detail,
 )
 
 
@@ -111,6 +112,20 @@ def run_analysis(project_root: str | Path, params: dict) -> None:
         df_s3,
         "S3 - Load / PV / Grid",
         figures_dir / "s3_load_pv_grid.png",
+    )
+
+    plot_dispatch_detail(
+        df_input,
+        df_s2,
+        "S2 - Dispatch detail",
+        figures_dir / "s2_dispatch_detail.png",
+    )
+
+    plot_dispatch_detail(
+        df_input,
+        df_s3,
+        "S3 - Dispatch detail",
+        figures_dir / "s3_dispatch_detail.png",
     )
 
     plot_soc(df_s1, "S1 - Battery SOC", figures_dir / "s1_soc.png")
